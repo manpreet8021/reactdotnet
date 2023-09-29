@@ -12,16 +12,19 @@ interface Props {
     editMode: boolean;
     openForm: (id: string) => void;
     closeForm: () => void;
+    createOrEditActivity: (activity: Activity) => void;
+    handleDelete: (id:string) => void;
 }
 
-export default function ActivityDashboard({activities, selectActivity, cancelActivity, selectedActivity, openForm, closeForm, editMode}: Props) {
+export default function ActivityDashboard({activities, selectActivity, cancelActivity, selectedActivity, openForm, closeForm, editMode, createOrEditActivity, handleDelete}: Props) {
     return (
         <Grid>
             <Grid.Column width='10'>
                 <List>
                     <ActivityList 
                         activities={activities} 
-                        selectActivity={selectActivity} />
+                        selectActivity={selectActivity}
+                        handleDelete={handleDelete} />
                 </List>
             </Grid.Column>
             <Grid.Column width='6'>
@@ -31,7 +34,7 @@ export default function ActivityDashboard({activities, selectActivity, cancelAct
                         cancelActivity={cancelActivity}
                         openForm={openForm} />}
                 {editMode && 
-                    <ActivityForm activity={selectedActivity} closeForm={closeForm} />
+                    <ActivityForm activity={selectedActivity} closeForm={closeForm} createOrEditActivity={createOrEditActivity}/>
                 }
             </Grid.Column>
         </Grid>
