@@ -38,7 +38,7 @@ export default observer(function ActivityForm() {
                 <Form.Input placeholder='City' value={activity?.city} name="city" onChange={handleOnChange}/>
                 <Form.Input placeholder='Venue' value={activity?.venue} name="venue" onChange={handleOnChange}/>
                 <Button loading={activityStore.buttonLoader} floated="right" positive type="submit" content='Submit' />
-                <Button floated="right" type="button" content='Cancel' onClick={activityStore.closeForm}/>
+                <Button floated="right" type="button" content='Cancel'/>
             </Form>
         </Segment>
     )
