@@ -10,11 +10,10 @@ const routes: RouteObject[] = [
         path: "/",
         element: <App />,
         children: [
-            {path: '', element: <HomePage />},
             {path: 'activities', element: <ActivityDashboard />},
             {path: 'activities/:id', element: <ActivityDetails />},
-            {path: 'createActivity', element: <ActivityForm />},
-            {path: 'createActivity/:id', element: <ActivityForm />}
+            {path: 'createActivity', element: <ActivityForm key="create" />},
+            {path: 'updateActivity/:id', element: <ActivityForm key="update" />}
         ]
     }
 ]
