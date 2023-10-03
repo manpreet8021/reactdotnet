@@ -1,9 +1,13 @@
-import React, { useEffect } from 'react'
-import { Button, Card, Image } from 'semantic-ui-react'
+import { useEffect } from 'react'
+import { Grid } from 'semantic-ui-react'
 import { useStore } from '../../../app/stores/store'
 import { observer } from 'mobx-react-lite';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import LoaderComponent from '../../../app/layout/LoaderComponent';
+import ActivityDetailHeader from '../details/ActivityDetailHeader';
+import ActivityDetailInfo from '../details/ActivityDetailInfo';
+import ActivityDetailChat from '../details/ActivityDetailChat';
+import ActivityDetailSidebar from '../details/ActivityDetailSidebar';
 
 export default observer(function ActivityDetails() {
     const {activityStore} = useStore();
@@ -11,30 +15,22 @@ export default observer(function ActivityDetails() {
 
     useEffect(()=>{
         if(id) activityStore.loadActivity(id);
-    },[id, activityStore])
+    },[id, activityStore.loadActivity])
 
     return (
         <>
             {
-                activityStore.loading ? <LoaderComponent /> :
-                <Card fluid>
-                    <Image src={`/assets/categoryImages/${activityStore.selectedActivity?.category}.jpg`}/>
-                    <Card.Content>
-                        <Card.Header>{activityStore.selectedActivity?.title}</Card.Header>
-                        <Card.Meta>
-                            <span className='date'>{activityStore.selectedActivity?.date}</span>
-                        </Card.Meta>
-                        <Card.Description>
-                            {activityStore.selectedActivity?.description}
-                        </Card.Description>
-                    </Card.Content>
-                    <Card.Content extra>
-                        <Button.Group widths='2'>
-                            <Button basic color='blue' content='Edit' as={Link} to={`/updateActivity/${activityStore.selectedActivity?.id}`} />
-                            <Button basic color='grey' content='Cancel' as={Link} to={'/activities'}/>
-                        </Button.Group>
-                    </Card.Content>
-                </Card>
+                activityStore.loading || !activityStore.selectedActivity ? <LoaderComponent /> :
+                <Grid>
+                    <Grid.Column width={10}>
+                        <ActivityDetailHeader activity={activityStore.selectedActivity}/>
+                        <ActivityDetailInfo  activity={activityStore.selectedActivity}/>
+                        <ActivityDetailChat />
+                    </Grid.Column>
+                    <Grid.Column width={6}>
+                        <ActivityDetailSidebar />
+                    </Grid.Column>
+                </Grid>
             }
         </>
     )

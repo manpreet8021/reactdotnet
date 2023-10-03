@@ -1,8 +1,8 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Button, Form, Segment } from "semantic-ui-react";
 import { useStore } from "../../../app/stores/store";
 import { observer } from "mobx-react-lite";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Activity } from "../../../app/models/activity";
 import LoaderComponent from "../../../app/layout/LoaderComponent";
 import { v4 as uuid } from "uuid";
@@ -23,7 +23,7 @@ export default observer(function ActivityForm() {
 
     useEffect(()=>{
         if(id) activityStore.loadActivity(id).then(activity => setActivity(activity!));
-    }, [id, activityStore.loadActivity])
+    }, [id, activityStore])
 
     function handleOnChange(event:ChangeEvent<HTMLInputElement>) {
         const {name, value} = event.target
@@ -52,7 +52,7 @@ export default observer(function ActivityForm() {
                         <Form.Input placeholder='City' value={activity?.city} name="city" onChange={handleOnChange}/>
                         <Form.Input placeholder='Venue' value={activity?.venue} name="venue" onChange={handleOnChange}/>
                         <Button loading={activityStore.buttonLoader} floated="right" positive type="submit" content='Submit' />
-                        <Button floated="right" type="button" content='Cancel'/>
+                        <Button as={Link} to='/activities' floated="right" type="button" content='Cancel'/>
                     </Form>
                 </Segment>
             }
