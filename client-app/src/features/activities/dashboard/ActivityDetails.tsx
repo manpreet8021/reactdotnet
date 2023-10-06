@@ -15,7 +15,7 @@ export default observer(function ActivityDetails() {
 
     useEffect(()=>{
         if(id) activityStore.loadActivity(id);
-    },[id, activityStore.loadActivity])
+    },[id, activityStore, activityStore.loadActivity])
 
     return (
         <>
