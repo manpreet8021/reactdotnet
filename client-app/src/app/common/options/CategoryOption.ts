@@ -1,0 +1,8 @@
+export const CategoryOption = [
+    {text: 'Drinks', value: 'drinks'},
+    {text: 'Culture', value: 'culture'},
+    {text: 'Films', value: 'films'},
+    {text: 'Food', value: 'food'},
+    {text: 'Music', value: 'music'},
+    {text: 'Travel', value: 'travel'}
+]
