@@ -6,6 +6,7 @@ import ActivityDetails from "../../features/activities/dashboard/ActivityDetails
 import TestErrors from "../../features/error/TestError";
 import NotFound from "../../features/error/NotFound";
 import ServerError from "../../features/error/ServerError";
+import LoginForm from "../../features/users/LoginForm";
 
 const routes: RouteObject[] = [
     {
@@ -16,6 +17,7 @@ const routes: RouteObject[] = [
             {path: 'activities/:id', element: <ActivityDetails />},
             {path: 'createActivity', element: <ActivityForm key="create" />},
             {path: 'updateActivity/:id', element: <ActivityForm key="update" />},
+            {path: 'login', element: <LoginForm />},
             {path: 'error', element: <TestErrors />},
             {path: 'not-found', element: <NotFound />},
             {path: 'server-error', element: <ServerError />},

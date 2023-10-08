@@ -21,6 +21,7 @@ namespace API.Controllers
             _userManager = userManager;
             _tokenService = tokenService;
         }
+
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto) {
@@ -38,7 +39,16 @@ namespace API.Controllers
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> register(RegisterDto registerDto) {
-            if(await _userManager.Users.AnyAsync(x => x.UserName == registerDto.UserName)) return BadRequest("Username is already taken");
+            if(await _userManager.Users.AnyAsync(x => x.UserName == registerDto.UserName)) {
+                ModelState.AddModelError("username", "Username is already taken");
+            }
+            if(await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email)) {
+                ModelState.AddModelError("email", "Email is already taken");
+            }
+
+            if(ModelState.Count > 0){
+                return ValidationProblem();
+            }
 
             var user = new AppUser{
                 DisplayName= registerDto.DisplayName,
@@ -52,18 +62,19 @@ namespace API.Controllers
             {
                 return CreateUserObject(user);
             }
-
-            return BadRequest("Error Occured");
+            ModelState.AddModelError("error", "Error Occured");
+            return ValidationProblem();
         }
 
-        private static UserDto CreateUserObject(AppUser user)
+        private UserDto CreateUserObject(AppUser user)
         {
             return new UserDto
             {
                 DisplayName = user.DisplayName,
                 Email = user.Email,
                 UserName = user.UserName,
-                Image = null
+                Image = null,
+                Token = _tokenService.CreateToken(user)
             };
         }
 
