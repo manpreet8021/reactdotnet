@@ -1,4 +1,6 @@
 using Application.Core;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -9,17 +11,19 @@ namespace Application.Activities
 {
     public class List
     {
-        public class Query : IRequest<Result<List<Activity>>> {}
+        public class Query : IRequest<Result<List<ActivityDto>>> {}
 
-        public class Handler : IRequestHandler<Query, Result<List<Activity>>>
+        public class Handler : IRequestHandler<Query, Result<List<ActivityDto>>>
         {
             private DataContext _dataContext;
             private ILogger _logger;
-            public Handler(DataContext dataContext, ILogger<List> logger){
+            private IMapper _mapper;
+            public Handler(DataContext dataContext, ILogger<List> logger, IMapper mapper){
                 _dataContext = dataContext;
                 _logger = logger;
+                _mapper = mapper;
             }
-            public async Task<Result<List<Activity>>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<List<ActivityDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
                 try {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -27,7 +31,11 @@ namespace Application.Activities
                 } catch (System.Exception) {
                     _logger.LogInformation("Task was cancelled");
                 }
-                return Result<List<Activity>>.Success(await _dataContext.Activities.ToListAsync());
+                var activities = await _dataContext.Activities
+                    .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken);
+
+                return Result<List<ActivityDto>>.Success(activities);
             }
         }
     }
