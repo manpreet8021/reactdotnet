@@ -49,4 +49,9 @@ export default class UserStore {
             console.log(error);
         }
     }
+
+    setImage = (iamge: string) =>{
+        if(this.user)
+            this.user.image = iamge;
+    }
 }
