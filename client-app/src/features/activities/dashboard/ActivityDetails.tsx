@@ -10,25 +10,26 @@ import ActivityDetailChat from '../details/ActivityDetailChat';
 import ActivityDetailSidebar from '../details/ActivityDetailSidebar';
 
 export default observer(function ActivityDetails() {
-    const {activityStore} = useStore();
+    const {activityStore: {loadActivity, clearSelectedActivity, selectedActivity, loading}} = useStore();
     const {id} = useParams();
 
     useEffect(()=>{
-        if(id) activityStore.loadActivity(id);
-    },[id, activityStore, activityStore.loadActivity])
+        if(id) loadActivity(id);
+        return () => clearSelectedActivity();
+    },[id, loadActivity, clearSelectedActivity])
 
     return (
         <>
             {
-                activityStore.loading || !activityStore.selectedActivity ? <LoaderComponent /> :
+                loading || !selectedActivity ? <LoaderComponent /> :
                 <Grid>
                     <Grid.Column width={10}>
-                        <ActivityDetailHeader activity={activityStore.selectedActivity}/>
-                        <ActivityDetailInfo  activity={activityStore.selectedActivity}/>
-                        <ActivityDetailChat />
+                        <ActivityDetailHeader activity={selectedActivity}/>
+                        <ActivityDetailInfo  activity={selectedActivity}/>
+                        <ActivityDetailChat activityId={selectedActivity.id}/>
                     </Grid.Column>
                     <Grid.Column width={6}>
-                        <ActivityDetailSidebar activity={activityStore.selectedActivity!}/>
+                        <ActivityDetailSidebar activity={selectedActivity!}/>
                     </Grid.Column>
                 </Grid>
             }
