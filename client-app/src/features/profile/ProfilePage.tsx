@@ -9,22 +9,22 @@ import { useEffect } from "react";
 
 export default observer(function ProfilePage() {
     const {username} = useParams<{username: string}>();
-    const {profileStore} = useStore();
+    const {profileStore:{loadProfile,profile,loadingProfile}} = useStore();
 
     useEffect(()=>{
         if(username)
-            profileStore.loadProfile(username);
-    }, [username, profileStore.loadProfile])
+            loadProfile(username);
+    }, [username, loadProfile])
 
     return(
         <>
-            {profileStore.loadingProfile ? <LoaderComponent content="Loading profile" /> : 
+            {loadingProfile ? <LoaderComponent content="Loading profile" /> : 
                 <Grid>
                     <Grid.Column width={16}>
-                        {profileStore.profile &&
+                        {profile &&
                             <>
-                                <ProfileHeader profile={profileStore.profile}/>
-                                <ProfileContent profile={profileStore.profile}/>
+                                <ProfileHeader profile={profile}/>
+                                <ProfileContent profile={profile}/>
                             </>
                         }
                     </Grid.Column>
