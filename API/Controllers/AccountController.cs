@@ -25,7 +25,7 @@ namespace API.Controllers
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto) {
-            var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            var user = await _userManager.Users.Include(p=>p.Photos).FirstOrDefaultAsync(x=>x.Email == loginDto.Email);
             if(user == null) return Unauthorized();
 
             var result = await _userManager.CheckPasswordAsync(user, loginDto.Password);
@@ -38,7 +38,7 @@ namespace API.Controllers
         }
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> register(RegisterDto registerDto) {
+        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto) {
             if(await _userManager.Users.AnyAsync(x => x.UserName == registerDto.UserName)) {
                 ModelState.AddModelError("username", "Username is already taken");
             }
@@ -73,14 +73,14 @@ namespace API.Controllers
                 DisplayName = user.DisplayName,
                 Email = user.Email,
                 UserName = user.UserName,
-                Image = null,
+                Image = user?.Photos?.FirstOrDefault(x=>x.IsMain)?.Url,
                 Token = _tokenService.CreateToken(user)
             };
         }
 
         [HttpGet]
         public async Task<ActionResult<UserDto>> GetCurrentUser() {
-            var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
+            var user = await _userManager.Users.Include(p=>p.Photos).FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
             return CreateUserObject(user);
         }
     }
